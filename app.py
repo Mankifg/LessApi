@@ -66,4 +66,5 @@ def get_image():
     return send_file(filename, mimetype="png")
 
 
-app.run()
+from waitress import serve
+serve(app, host="0.0.0.0", port=5000)
