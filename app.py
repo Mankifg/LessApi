@@ -1,10 +1,18 @@
 from flask import Flask
 from flask import request, send_file
+from waitress import serve
 
 from mergeimg import generate_merged_image
 
 import random
 import asyncio
+
+from generate_image import turn_by_90_deg
+
+import logging
+logger = logging.getLogger('waitress')
+logger.setLevel(logging.INFO)
+
 
 app = Flask(__name__)
 
@@ -28,7 +36,6 @@ GOOD_NUMBERS = []
 
 for num in NUMBERS:
     nnum = f"0b{num}"
-    print(nnum)
     nnum = int(nnum,2)
     GOOD_NUMBERS.append(nnum)
 
@@ -40,8 +47,62 @@ async def generate_random_nums():
         random_ele = random.choice(temp_list)
         temp_list.remove(random_ele)
         chossen.append(random_ele) 
+        
+    for i in range(len(chossen)):
+        chossen[i] = (chossen[i])
+    
     return {"data":chossen}
 
+
+def arrify_lbp(lbp):
+    
+    for i in range(2,10):
+        lbp = lbp.replace(str(i),"0"*i)
+    
+    lbp = lbp.split("/")
+    
+    if len(lbp) % 2 != 0 or len(lbp[0]) % 2 != 0:
+        return False,"Error: Incorrect side of less board position. Try with both sides to be divisible by 2."
+    
+      # w white, b black, 0 empty
+    
+    
+    print(lbp)
+    
+    arry = []
+    for x in range(0,int(len(lbp)),2):
+        a2 = []
+    
+        upper_row = lbp[x]
+        lower_row = lbp[x+1]
+        
+        print("-")
+        print(upper_row,lower_row)
+        print("-")
+    
+        len_row = len(upper_row)
+        
+        for y in range(0,len_row,2):
+            
+            print(upper_row, upper_row[y],upper_row[y+1])
+            
+        
+            block=[[upper_row[y],upper_row[y+1]],[lower_row[y],lower_row[y+1]]]
+                
+            lbp[x] = lbp[x][:-2]
+            lbp[x+1] = lbp[x+1][:-2]
+            
+            
+            a2.append(block)
+            
+        arry.append(a2)
+        
+    print(arry)
+    
+    return True,arry
+    
+        
+        
 
 @app.route("/")
 def main():
@@ -55,16 +116,23 @@ async def new_game():
 
 @app.route("/image")
 def get_image():
-    t = request.args.get("nums")
-    print(t)
+    
+    
+    nums = request.args.get("nums")
+    lbp = request.args.get("lbp")
+    
+    print(nums,lbp)
+    
+    nums = nums.split(",")
+    nums = list(map(int, nums))
 
-    t = t.split(",")
-    t = list(map(int, t))
+    succes,lbp_arry = arrify_lbp(lbp)
+    if not succes:
+        return lbp_arry
+    
 
-    filename = generate_merged_image(t)
-
+    filename = generate_merged_image(nums,lbp_arry)
     return send_file(filename, mimetype="png")
 
 
-from waitress import serve
 serve(app, host="0.0.0.0", port=5000)

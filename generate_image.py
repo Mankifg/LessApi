@@ -1,5 +1,6 @@
 import drawsvg as draw
-
+import random
+import logging
 BACKGROUND_COLOR = "#FFFFFF"
 ONE_COST_STEP_COLOR = "#ADD8E6"
 DOUBLE_COST_STEP_COLOR = "#1a4cd6"
@@ -9,7 +10,7 @@ THICK = 10  # double cost step thick
 FULL = 100
 INT_MAX = 2**BINARY_LEN
 
-PATH_PNG = "tmp/{}.png"
+PATH_PNG = "tmp/{}_.png"
 
 
 def turn_by_90_deg(num):
@@ -100,13 +101,12 @@ def offset(wide, total=100):
 
 def update_by_1_move(image, dec):
     if dec > INT_MAX:
-        print("big num")
+        # todo 
         return image
 
     binary = binary_by_12(dec)
-    print(binary)
     if not len(binary) == 12:
-        print("not correnct binary")
+        # todo
         return image
 
     ROM = [
@@ -132,14 +132,45 @@ def update_by_1_move(image, dec):
 
     return image
 
+def get_cords(n):
+    if n == 0:
+        return 27.5
+    elif n == 1:
+        return 72.5
 
-def make_tile_and_save_it(b):
+def get_color(c):
+        if c == "w":
+            return "red"  #? nead better colors
+        elif c == "b":
+            return "blue"
+        else:
+            logging.error("Wutt ?")
+            return "purple"
+            
+
+def draw_players(tile,players):
+    for x in range(len(players)):
+        for y in range(len(players[x])):
+            c = players[y][x]
+            
+            if c != "0":
+                tile.append(draw.Circle(get_cords(x),get_cords(y),17,fill=get_color(c),stroke_width=1, stroke='#30302f'))  # todo maybe better color of black, or make it user changable
+    
+    
+    return tile
+
+
+def make_tile_and_save_it(num,b,players):
     tile = draw_empty_tile()
     tile = update_by_1_move(tile, b)
+    tile = draw_players(tile,players)
+
+    print(players)
 
     tile.set_pixel_scale(5)
-    print(PATH_PNG.format(b))
+    
+    path = PATH_PNG.format(num)
+    
+    tile.save_png(path)
 
-    tile.save_png(PATH_PNG.format(b))
-
-    return PATH_PNG.format(b)
+    return path

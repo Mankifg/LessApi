@@ -1,5 +1,5 @@
 from PIL import Image
-from geneate_image import make_tile_and_save_it
+from generate_image import make_tile_and_save_it
 import os
 from pathlib import Path
 
@@ -11,12 +11,21 @@ SAVE_PATH = "tmp/merged.png"
 
 # file_to_open = ["1.png","2.png","3.png","4.png","5.png","6.png","7.png","8.png","9.png"]
 
+def num_to_x_y(num):
+    return num//3,num%3
 
-def generate_merged_image(arry_of_dec):
+def generate_merged_image(arry_of_dec,arry):
     files_to_open = []
 
-    for dec in arry_of_dec:
-        path = make_tile_and_save_it(dec)
+        
+    
+    for i in range(len(arry_of_dec)):
+        
+        dec = arry_of_dec[i]
+        
+        pos_x_block,pos_y_block = num_to_x_y(i)
+        print(pos_x_block,pos_y_block)
+        path = make_tile_and_save_it(i,dec,arry[pos_x_block][pos_y_block])
         files_to_open.append(path)
 
     image_arry = []
