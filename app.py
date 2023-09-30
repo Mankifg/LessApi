@@ -49,7 +49,9 @@ async def generate_random_nums():
         chossen.append(random_ele) 
         
     for i in range(len(chossen)):
-        chossen[i] = (chossen[i])
+        r = random.randint(0, 3)
+        for _ in range(r):
+            chossen[i] = turn_by_90_deg(chossen[i])
     
     return {"data":chossen}
 
