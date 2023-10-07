@@ -5,6 +5,7 @@ from waitress import serve
 from mergeimg import generate_merged_image
 
 import random
+import asyncio
 
 from generate_image import turn_by_90_deg
 
@@ -39,7 +40,7 @@ for num in NUMBERS:
     GOOD_NUMBERS.append(nnum)
 
 
-def generate_random_nums():
+async def generate_random_nums():
     chossen = []
     temp_list = GOOD_NUMBERS[:]  # learned from chatgpt
     for _  in range(9):
