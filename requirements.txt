@@ -3,5 +3,4 @@ Flask==2.2.2
 Pillow==10.0.0
 svglib
 rlPyCairo
-flask[async]
 waitress
