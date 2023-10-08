@@ -136,6 +136,9 @@ def get_image():
     
     print(nums,lbp)
     
+    if nums == "" or nums == None or lbp == "" or lbp == None:
+        return "Nums, or less board position is missing. Please fix it."
+    
     nums = nums.split(",")
     nums = list(map(int, nums))
     
