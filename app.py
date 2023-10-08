@@ -55,6 +55,16 @@ async def generate_random_nums():
     
     return {"data":chossen}
 
+def check_if_good(lbp):
+    if not len(lbp) == 6:
+        return False
+    
+
+    for i in range(len(lbp)):
+        if len(lbp[i]) != 6:
+            return False        
+
+    return True
 
 def arrify_lbp(lbp):
     
@@ -62,14 +72,15 @@ def arrify_lbp(lbp):
         lbp = lbp.replace(str(i),"0"*i)
     
     lbp = lbp.split("/")
-    
-    if len(lbp) % 2 != 0 or len(lbp[0]) % 2 != 0:
-        return False,"Error: Incorrect side of less board position. Try with both sides to be divisible by 2."
-    
-      # w white, b black, 0 empty
+
+    # w white, b black, 0 empty
     
     
     print(lbp)
+    
+    good = check_if_good(lbp)
+    if not good:
+        return False,"Error: Incorrect less board position. Try with both sides to be 6."
     
     arry = []
     for x in range(0,int(len(lbp)),2):
@@ -127,6 +138,9 @@ def get_image():
     
     nums = nums.split(",")
     nums = list(map(int, nums))
+    
+    if len(nums) != 9:
+        return "There must be exacty 9 numbers, no less no more."
 
     succes,lbp_arry = arrify_lbp(lbp)
     if not succes:
